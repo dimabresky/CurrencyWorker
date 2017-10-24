@@ -1,0 +1,26 @@
+{
+  "name": "CurrencyWorker",
+  "main": "CurrencyWorker.js",
+  "authors": [
+    "dimabresky <dimabresky@gmail.com>"
+  ],
+  "description": "currency constructor for you app",
+  "keywords": [
+    "currency",
+    "convert",
+    "js",
+    "currency converter"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/dimabresky/CurrencyWorker.git",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "qunit": "^2.4.1"
+  }
+}

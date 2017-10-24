@@ -18,7 +18,7 @@
     } else if (typeof module === 'object' && module.exports) {
         module.exports = factory();
     } else {
-        root.CurrencyConverter = factory();
+        root.CurrencyWorker = factory();
     }
 })(this, function () {
 
@@ -45,7 +45,7 @@
 
         if (
             typeof parameters.baseIso !== 'string' ||
-            !'/^[A-Z]{3}$/'.test(parameters.baseIso)
+            !/^[A-Z]{3}$/.test(parameters.baseIso)
         ) {
             throw new Error('Неверно указан ISO базовой валюты');
         }
@@ -61,7 +61,7 @@
         for (iso in parameters.course) {
 
             if (
-              '/^[A-Z]{3}$/'.test(iso) &&
+              /^[A-Z]{3}$/.test(iso) &&
               parameters.course.hasOwnProperty(iso)
             ) {
 
@@ -90,7 +90,7 @@
 
             iiso = key2.split('/')[1];
 
-            course[iso + '/' + iiso] = Number(courses[iiso]/courses[iso]).toFixed(courseDecimal);
+            courses[iso + '/' + iiso] = Number(parameters.course[iiso]/parameters.course[iso]).toFixed(courseDecimal);
 
           }
 
@@ -124,9 +124,15 @@
 
             return {
               value: Number(value/courses[inIso + '/' + outIso]).toFixed(courseDecimal),
-              iso: outIso
+              iso: outIso,
               toString: function () {
-                _this.format(this.value, this.iso, parameters.decimal, parameters.decpoint, parameters.ssep)
+                return _this.format(
+                    this.value,
+                    this.iso,
+                    parameters.decimal,
+                    parameters.decpoint,
+                    parameters.ssep
+                )
               }
             }
 
@@ -157,4 +163,6 @@
         };
 
     }
+
+    return CurrencyWorker;
 });
