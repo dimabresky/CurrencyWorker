@@ -31,9 +31,17 @@
      */
     function CurrencyWorker (parameters) {
 
+        var courseDecimal = 5;
+
         var courses = {};
 
+        var iso = '', iiso = '';
+
         var commissions = typeof parameters.commissions === 'object' ? parameters.commissions : {};
+
+        var currencyList = {};
+
+        var _this = this;
 
         if (
             typeof parameters.baseIso !== 'string' ||
@@ -47,26 +55,79 @@
             отношению к указанной базовой валюте');
         }
 
-        for (var iso in parameters.course) {
+        // курс базовой валюты по отношению к себе самой
+        parameters.course[parameters.baseIso] = 1;
 
-            if (parameters.course.hasOwnProperty(iso)) {
+        for (iso in parameters.course) {
 
-                courses[parameters.baseIso + '/' + iso] = parameters.course[iso];
+            if (
+              '/^[A-Z]{3}$/'.test(iso) &&
+              parameters.course.hasOwnProperty(iso)
+            ) {
+
+                courses[parameters.baseIso + '/' + iso] = Number(parameters.course[iso]).toFixed(courseDecimal);
 
                 if (typeof commissions[iso] === 'number' && commissions[iso] > 0) {
-                    courses[parameters.baseIso + '/' + iso] = parameters.course[iso] + (parameters.course[iso]*commissions/100);
+                    courses[parameters.baseIso + '/' + iso] = Number(parameters.course[iso] + (parameters.course[iso]*commissions/100)).toFixed(courseDecimal);
                 }
+
+                currencyList[iso] = true;
 
             }
 
         }
 
+        // расчет кросскурсов
+        for (var key in courses) {
+
+          iso = key.split('/')[1];
+
+          if (iso === parameters.baseIso) {
+            continue;
+          }
+
+          for (var key2 in courses) {
+
+            iiso = key2.split('/')[1];
+
+            course[iso + '/' + iiso] = Number(courses[iiso]/courses[iso]).toFixed(courseDecimal);
+
+          }
+
+        }
+
         this.convert = function (value, inIso, outIso) {
 
-            value = value || 0;
+            value = Number(value) || 0;
 
-            if (value <= 0) {
-                throw new Error('Значение для конвертации должно быть больше 0');
+            if (value < 0) {
+                throw new Error('Значение для конвертации должно быть >= 0');
+            }
+
+            if (
+              typeof currencyList[inIso] !== 'boolean' ||
+              currencyList[inIso] !== true
+             ) {
+              throw new Error('Неизвестный iso входной валюты');
+            }
+
+            if (outIso) {
+              if (
+                typeof currencyList[outIso] !== 'boolean' ||
+                currencyList[outIso] !== true
+               ) {
+                throw new Error('Неизвестный iso выходной валюты');
+              }
+            } else {
+              outIso = parameters.baseIso;
+            }
+
+            return {
+              value: Number(value/courses[inIso + '/' + outIso]).toFixed(courseDecimal),
+              iso: outIso
+              toString: function () {
+                _this.format(this.value, this.iso, parameters.decimal, parameters.decpoint, parameters.ssep)
+              }
             }
 
         };
@@ -75,9 +136,9 @@
          * Форматирование цены
          * @param  {Number} value
          * @param  {String} iso
-         * @param  {Number} decimal
-         * @param  {String} decpoint
-         * @param  {String} ssep
+         * @param  {Number} decimal количество десятичных знаков
+         * @param  {String} decpoint разделитель целой и дробной части
+         * @param  {String} ssep разделитель разрядов числа
          * @return {String}
          */
         this.format = function (value, iso, decimal, decpoint, ssep) {
