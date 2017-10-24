@@ -19,5 +19,6 @@ console.log(currencyWorker.convert(1, 'USD', 'EUR').toString());
 
 // возвращает значение курса USD к EUR
 console.log(currencyWorker.course('USD/RUB'));
-
 ```
+
+Протестировано с Chrome 61.0.x.x
