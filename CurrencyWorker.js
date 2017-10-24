@@ -96,6 +96,13 @@
 
         }
 
+        /**
+         * Конвертация валюты
+         * @param  {Number} value
+         * @param  {String} inIso
+         * @param  {String} outIso
+         * @return {Object}
+         */
         this.convert = function (value, inIso, outIso) {
 
             value = Number(value) || 0;
@@ -160,6 +167,21 @@
             result[0] = result[0].replace(/(\d{1,3}(?=(\d{3})+(?:\.\d|\b)))/g,"\$1"+ssep);
 
             return result[0] + decpoint + result[1] + ' ' + iso;
+        };
+
+        /**
+         * Возвращает значение курса
+         * @param  {String} courseTitle "USD/EUR"
+         * @return {String}
+         */
+        this.course = function (courseTitle) {
+
+            if (typeof courses[courseTitle] !== 'string') {
+                throw new Error("Курс не найден");
+            }
+
+            return courses[courseTitle];
+
         };
 
     }

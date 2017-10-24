@@ -34,4 +34,6 @@
         });
     }
 
+    console.log(currencyWorker.course('USD/EUR'));
+
 }(CurrencyWorker, QUnit);
