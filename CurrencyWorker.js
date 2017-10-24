@@ -27,6 +27,15 @@
     /**
      * Конструктор для работы с валютой
      * @param       {Object} parameters
+     *
+     * {
+     *      baseIso: iso базовой валюты,
+     *      course: объект курсов базовой валюты
+     *      decimal: количество знаков после запятой
+     *      decpoint: разделитель целой и дробной части
+     *      ssep: разделитель разрядов целой части
+     * }
+     *
      * @constructor
      */
     function CurrencyWorker (parameters) {
