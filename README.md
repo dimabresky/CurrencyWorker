@@ -17,7 +17,7 @@ var currencyWorker = new CurrencyWorker({
 // конвертация 1 USD в EUR
 console.log(currencyWorker.convert(1, 'USD', 'EUR').toString());
 
-// возвращает значение курса USD к EUR
+// возвращает значение курса USD к RUB
 console.log(currencyWorker.course('USD/RUB'));
 ```
 
